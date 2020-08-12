@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+
+
+</head>
+
+<div th:fragment="navigation(activeTab)">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item" th:classappend="${activeTab == 'Home' ? 'active' : ''}">
+                    <a class="nav-link" th:href="@{'/'}">Главная</a>
+                </li>
+                <li class="nav-item" th:classappend="${activeTab == 'BookStore' ? 'active' : ''}">
+                    <a class="nav-link" th:href="@{'/books'}">Книги</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+
+<div th:fragment="page_navigation(page, pageCount)">
+    <nav>
+        <ul class="pagination" th:each="n: ${#numbers.sequence(1, pageCount)}" style="float:left">
+            <li class="page-item"><a class="page-link" th:classappend="${page == 1 ? 'dis' : ''}"
+                                     th:if="${n == 1}" th:href="@{'/books?p=' + ${page - 1}}">prev</a>
+            </li>
+
+            <li class="page-item"><a class="page-link"
+                                     th:href="@{'/books?p=' + ${n}}" th:text="${n}"></a>
+
+            </li>
+            <li class="page-item"><a class="page-link" th:classappend="${page == pageCount ? 'dis' : ''}"
+                                     th:if="${n == pageCount}" th:href="@{'/books?p=' + ${page + 1}}">next</a><!--th:href="@{'/books?p=' + ${page + 1}}"-->
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<div th:fragment="filter()">
+
+    <h4>Фильтр:</h4>
+    <form th:action="@{'/books'}" method="get" target="_self">
+        <div class="form-group">
+            <label>Минимальная стоимость</label>
+            <input th:value="${param.minPrice != null ? param.minPrice : null}" type="number" class="form-control form-control-sm" name="minPrice">
+
+            <label>Максимальная стоимость</label>
+            <input th:value="${param.maxPrice != null ? param.maxPrice : null}" type="number" class="form-control form-control-sm" name="maxPrice">
+
+            <label>Поиск книги по шаблону названия</label>
+            <input th:value="${param.titlePart != null ? param.titlePart : null}" type="text" class="form-control form-control-sm" name="titlePart">
+
+            <label>Жанры</label>
+            <ul>
+                <li th:each="genre, state : ${allGenres}">
+                    <input type="checkbox" th:value="${genre}" th:name="gen" th:checked="${(param.gen[0] != null && #lists.contains(param.gen, #strings.toString(genre))) ? true : false}">
+                    <label th:text="${genre}"></label>
+                </li>
+            </ul>
+        </div>
+        <button class="btn btn-primary" onclick="sendForm();">Применить</button>
+        <!--type="submit"-->
+    </form>
+
+</div>
