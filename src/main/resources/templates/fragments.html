@@ -62,7 +62,7 @@
             <label>Жанры</label>
             <ul>
                 <li th:each="genre, state : ${allGenres}">
-                    <input type="checkbox" th:value="${genre}" th:name="gen" th:checked="${(param.gen[0] != null && #lists.contains(param.gen, #strings.toString(genre))) ? true : false}">
+                    <input type="checkbox" th:value="${genre}" th:name="gen" th:checked="${(param.gen!= null && param.gen[0] != null && #lists.contains(param.gen, #strings.toString(genre))) ? true : false}">
                     <label th:text="${genre}"></label>
                 </li>
             </ul>
